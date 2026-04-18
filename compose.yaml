@@ -1,0 +1,25 @@
+services:
+
+  db:
+    container_name: 'MySQL-recipe-finder'
+    image: 'mysql:latest'
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - '3306:3306'
+    restart: always
+
+  app:
+    container_name: 'app-recipe-finder'
+    build: .
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${MYSQL_DB}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USERNAME}
+    ports:
+      - '8080'
+    depends_on:
+      - db
+    restart: on-failure:3
+
